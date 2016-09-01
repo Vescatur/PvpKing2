@@ -21,6 +21,10 @@ public class Main extends JavaPlugin {
     public static Chat chat = null;
     public com[] Commands;
 
+    public static Game game = null;
+    public static GameListener gameListener = null;
+    public static Timer timer = null;
+
     @Override
     public void onEnable() {
         Bukkit.broadcastMessage("PvpKing is starting up.");
@@ -37,6 +41,10 @@ public class Main extends JavaPlugin {
         }
         Commands = new com[1];
         Commands[0] = new comStartpvp(this);
+        game = new Game(this);
+        gameListener = new GameListener(this);
+        timer = new Timer(this);
+
 
         Bukkit.broadcastMessage("PvpKing has succesfully started.");
     }
