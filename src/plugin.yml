@@ -1,0 +1,8 @@
+name: pvpking
+version: 1
+author: Vescator
+main: nl.edmi.pvpking.Main
+commands:
+                           startpvp:
+                                    description: Does nothing
+                                    usage: /startpvp
