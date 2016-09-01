@@ -13,6 +13,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
  */
 public class GameListener implements Listener {
 
+    //Geen blocken slopen
+    //Gedoden mensen uit de lijst halen -> teleporteren
+    //Leaven uit de lijst
+    //Joinen moet geteleporteert worden
+
     public Main main;
 
     public GameListener(Main instance){

@@ -22,11 +22,9 @@ public class comStartpvp extends com {
 
     @Override
     public void Execute(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
-        List<Player> onlinePlayers = (List<Player>) Bukkit.getOnlinePlayers();
+        main.game.Begin();
 
-        for(Player player:onlinePlayers) {
-            Location loc = new Location(Bukkit.getWorlds().get(5),0,120,0);
-            player.teleport(loc);
-        }
+
+
     }
 }
