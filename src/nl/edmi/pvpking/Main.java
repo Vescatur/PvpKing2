@@ -3,6 +3,7 @@ package nl.edmi.pvpking;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
+import nl.edmi.pvpking.Commands.comList;
 import nl.edmi.pvpking.Commands.comStartpvp;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -39,8 +40,9 @@ public class Main extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        Commands = new com[1];
+        Commands = new com[2];
         Commands[0] = new comStartpvp(this);
+        Commands[1] = new comList(this);
         game = new Game(this);
         gameListener = new GameListener(this);
         timer = new Timer(this);
@@ -75,6 +77,8 @@ public class Main extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("startpvp")) {
             Commands[0].Execute(sender,cmd,label,args);
+        }else if (cmd.getName().equalsIgnoreCase("list")) {
+            Commands[1].Execute(sender,cmd,label,args);
         }
         return  true;
     }
