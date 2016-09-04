@@ -6,3 +6,6 @@ commands:
                            startpvp:
                                     description: Does nothing
                                     usage: /startpvp
+                           listalive:
+                                    description: Does nothing
+                                    usage: /listalive

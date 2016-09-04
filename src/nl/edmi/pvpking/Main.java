@@ -47,7 +47,7 @@ public class Main extends JavaPlugin {
         gameListener = new GameListener(this);
         timer = new Timer(this);
 
-
+        Bukkit.getPluginManager().registerEvents(gameListener, this);
         Bukkit.broadcastMessage("PvpKing has succesfully started.");
     }
 
@@ -77,7 +77,7 @@ public class Main extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("startpvp")) {
             Commands[0].Execute(sender,cmd,label,args);
-        }else if (cmd.getName().equalsIgnoreCase("list")) {
+        }else if (cmd.getName().equalsIgnoreCase("listalive")) {
             Commands[1].Execute(sender,cmd,label,args);
         }
         return  true;

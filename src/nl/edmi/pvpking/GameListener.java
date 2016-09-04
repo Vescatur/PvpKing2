@@ -29,56 +29,50 @@ public class GameListener implements Listener {
         main = instance;
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onEntityDeath(PlayerDeathEvent e){
-        if (e.getEntity() instanceof Player){
-            Player player = (Player) e.getEntity();
-            player.sendMessage("a");
-            if(Main.game.PlayersAlive.contains(player)) {
-                player.sendMessage("b");
-                Main.game.PlayersAlive.remove(player);
-            }
-            player.sendMessage("c");
-        }
-    }
+
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerJoin(PlayerJoinEvent e){
-        if(Main.game.battle) {
-            Player player = e.getPlayer();
-            World world = Bukkit.getWorlds().get(5);
-            Location loc = new Location(world,0,140,0);
-            player.teleport(loc);
-        }
+        if(!Main.game.battle) return;
+        Player player = e.getPlayer();
+        PlayerStat playerStat =  Main.game.GetStatOfPlayer(player);
+        playerStat.online = true;
+        playerStat.PlayerRespawn();
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuit(PlayerQuitEvent e) {
-        if(Main.game.battle) {
-            Player player = (Player) e.getPlayer();
-            player.sendMessage("a");
-            if(Main.game.PlayersAlive.contains(player)) {
-                player.sendMessage("b");
-                Main.game.PlayersAlive.remove(player);
-            }
-            player.sendMessage("c");
-        }
+        if(!Main.game.battle) return;
+        Player player = (Player) e.getPlayer();
+        PlayerStat playerStat =  Main.game.GetStatOfPlayer(player);
+        playerStat.PlayerDie();
+        playerStat.online = false;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerRespawn(PlayerRespawnEvent e) {
-        if(Main.game.battle) {
-            Player player = e.getPlayer();
-            player.sendMessage("a");
-            if(Main.game.PlayersAlive.contains(player)) {
-                player.sendMessage("b");
-                Main.game.PlayersAlive.remove(player);
-            }
-            player.sendMessage("c");
-            World world = Bukkit.getWorlds().get(5);
-            Location loc = new Location(world,0,140,0);
-            player.teleport(loc);
+        if(!Main.game.battle) return;
+        Player player = e.getPlayer();
+        PlayerStat playerStat =  Main.game.GetStatOfPlayer(player);
+        playerStat.PlayerRespawn();
+
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onEntityDeath(PlayerDeathEvent e){
+        if(!Main.game.battle) return;
+        Player player = (Player) e.getEntity();
+        PlayerStat playerStat =  Main.game.GetStatOfPlayer(player);
+
+        Player killer = player.getKiller();
+        if (killer != null) {
+            PlayerStat playerStat2 =  Main.game.GetStatOfPlayer(player);
+            playerStat2.PlayerKill(playerStat.Score);
         }
+
+        playerStat.PlayerDie();
+        e.setKeepInventory(true);
+
     }
 
 }

@@ -1,6 +1,7 @@
 package nl.edmi.pvpking.Commands;
 
 import nl.edmi.pvpking.Main;
+import nl.edmi.pvpking.PlayerStat;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -17,8 +18,8 @@ public class comList extends com {
     public void Execute(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         player.sendMessage("List of players Alive");
-        for (Player  p : Main.game.PlayersAlive) {
-            player.sendMessage(p.getDisplayName());
+        for (PlayerStat p : Main.game.PlayersAlive) {
+            player.sendMessage(p.player.getDisplayName());
         }
     }
 }
