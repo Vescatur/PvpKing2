@@ -12,7 +12,7 @@ import java.util.List;
  * Created by Ivan on 1-9-2016.
  */
 public class Game {
-    public List<Player> PlayersAlive;
+    public List<PlayerStat> PlayersAlive;
     public Main main;
     public Game(Main instance){
         main = instance;
@@ -25,12 +25,18 @@ public class Game {
     public void Begin() {
         if (battle) return;
 
+        Bukkit.broadcastMessage("First person with a lvl of 30 is the KING.");
+
         //Get All Players
-        PlayersAlive = (List<Player>) Bukkit.getOnlinePlayers();
+        for(Player player:(List<Player>) Bukkit.getOnlinePlayers()) {
+            PlayersAlive.add(new PlayerStat(10,0,player));
+        }
+
         World world = Bukkit.getWorlds().get(5);
 
-        for(Player player: PlayersAlive) {
+        for(PlayerStat playerStat: PlayersAlive) {
             //Teleport Players
+            Player player = playerStat.player;
             Location loc = new Location(world,0,120,0);
             player.teleport(loc);
 
@@ -48,7 +54,7 @@ public class Game {
         //Give Players absorption op basis van ranks
         //StartTimer
         //pvp aan over 10 seconden
-        main.timer.Begin();
+        Main.timer.Begin();
         battle = true;
 
 
@@ -62,25 +68,34 @@ public class Game {
         return true;
     }
 
-    public void End() {
+    public void End(PlayerStat winner) {
         pvp = false;
         battle = false;
 
-        PlayersAlive = (List<Player>) Bukkit.getOnlinePlayers();
-
         //teleport iedereen naar spawn
         World world = Bukkit.getWorlds().get(0);
-        for(Player player: PlayersAlive) {
+        for(Player player: (List<Player>) Bukkit.getOnlinePlayers()) {
             Location loc = new Location(world,161.5,63,259.5);
             player.teleport(loc);
             player.setHealth(player.getMaxHealth());
-            player.setSaturation(20);
+            player.setSaturation(20f);
         }
 
 
         //Display winnaar
+        Bukkit.broadcastMessage(winner.player.getName() + " is the Winner");
         //permisions winnaar
         //Spawn verbouwen met een bordje van de winnaar
     }
 
+    public PlayerStat GetStatOfPlayer(Player player) {
+        for(PlayerStat playerStat: PlayersAlive) {
+            if(playerStat.player == player) {
+                return playerStat;
+            }
+        }
+        PlayerStat playerStat = new PlayerStat(0,0,player);
+        PlayersAlive.add(playerStat);
+        return playerStat;
+    }
 }
