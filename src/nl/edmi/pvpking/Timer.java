@@ -1,12 +1,8 @@
 package nl.edmi.pvpking;
 
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-
-import java.util.List;
 
 /**
  * Created by Ivan on 1-9-2016.
@@ -21,8 +17,27 @@ public class Timer {
 
     public void Begin() {
         Main.game.pvp = true;
-        BukkitTask task2 = new ChangeHealthBeam(main).runTaskLater(main,60*20);
-        BukkitTask task = new ChangeHealthBeam(main).runTaskTimer(main,60*20,30*20);
+        BukkitTask task2 = new ChangePvp(main).runTaskLater(main,60*20);
+        BukkitTask task = new UpdateGame(main).runTaskTimer(main,5,5);
+    }
+
+    public void RespawnPlayer(PlayerStat playerStat) {
+        BukkitTask task = new RespawnPlayer(main,playerStat).runTaskLater(main, 1);
+    }
+
+    class RespawnPlayer extends BukkitRunnable {
+        private Main main;
+        private PlayerStat playerStat;
+
+        public RespawnPlayer(Main mainT,PlayerStat playerStatT) {
+            main = mainT;
+            playerStat = playerStatT;
+        }
+
+        @Override
+        public void run() {
+            playerStat.PlayerRespawn();
+        }
     }
 
     class ChangePvp extends BukkitRunnable {
@@ -38,16 +53,16 @@ public class Timer {
         }
     }
 
-    class ChangeHealthBeam extends BukkitRunnable {
+    class UpdateGame extends BukkitRunnable {
         private Main main;
 
-        public ChangeHealthBeam (Main mainT) {
+        public UpdateGame (Main mainT) {
             main = mainT;
         }
 
         @Override
         public void run() {
-            if(Main.game.ChangeHealthBeam() ) {
+            if(!Main.game.UpdateGame()) {
                 this.cancel();
             }
         }

@@ -54,8 +54,9 @@ public class GameListener implements Listener {
         if(!Main.game.battle) return;
         Player player = e.getPlayer();
         PlayerStat playerStat =  Main.game.GetStatOfPlayer(player);
-        playerStat.PlayerRespawn();
-
+        //playerStat.PlayerRespawn();
+        Main.timer.RespawnPlayer(playerStat);
+        player.sendMessage("You have " + playerStat.Lives + " Lives left.");
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

@@ -25,9 +25,11 @@ public class PlayerStat {
         if (Lives > 0) {
             World world = Bukkit.getWorlds().get(5);
             Location loc = new Location(world,0,120,0);
+            player.teleport(loc);
         }else {
             World world = Bukkit.getWorlds().get(5);
             Location loc = new Location(world,0,140,0);
+            player.teleport(loc);
         }
     }
 
