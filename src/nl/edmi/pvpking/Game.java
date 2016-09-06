@@ -1,10 +1,8 @@
 package nl.edmi.pvpking;
 
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.WorldBorder;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
@@ -35,7 +33,7 @@ public class Game {
         PlayersAlive = new ArrayList<PlayerStat>();
         //Get All Players
         for(Player player:(List<Player>) Bukkit.getOnlinePlayers()) {
-            PlayersAlive.add(new PlayerStat(10,0,player));
+            PlayersAlive.add(new PlayerStat(3,0,player));
         }
 
         World world = Bukkit.getWorlds().get(5);
@@ -53,7 +51,8 @@ public class Game {
         //Beweeg worldborder
         WorldBorder border = world.getWorldBorder();
         border.setSize(50);
-
+        border.setWarningDistance(0);
+        border.setDamageAmount(100);
         manager = Bukkit.getScoreboardManager();
         board = manager.getNewScoreboard();
         objective = board.registerNewObjective("score","dummy");
@@ -77,7 +76,17 @@ public class Game {
     public boolean UpdateGame() {
         for(PlayerStat playerStat: PlayersAlive) {
             if (!playerStat.player.isDead()) {
-                playerStat.Score++;
+                if (playerStat.Lives >=0) {
+                    Player player = playerStat.player;
+                    Location loc = player.getLocation();
+                    loc.setY(loc.getY()-1);
+                    Block block = loc.getBlock();
+                    if(block.getType() == Material.IRON_BLOCK) {
+                        playerStat.Score+=1;
+                    }else if(block.getType() == Material.BEACON){
+                        playerStat.Score+=3;
+                    }
+                }
             }
             if (playerStat.Score >= 200) {
                 End(playerStat);
@@ -91,8 +100,10 @@ public class Game {
 
             for(PlayerStat playerStat: PlayersAlive) {
                 if (playerStat.player != null ) {
-                    Score line = objective.getScore(playerStat.player.getName());
-                    line.setScore((int)playerStat.Score);
+                    if (playerStat.Score != 0) {
+                        Score line = objective.getScore(playerStat.player.getName());
+                        line.setScore((int)playerStat.Score);
+                    }
                 }
             }
             if (Bukkit.getOnlinePlayers().size()>=1) {
@@ -108,9 +119,9 @@ public class Game {
     public void End(PlayerStat winner) {
         pvp = false;
         battle = false;
-
-        //teleport iedereen naar spawn
+        board.clearSlot(DisplaySlot.SIDEBAR);
         World world = Bukkit.getWorlds().get(0);
+
         for(Player player: (List<Player>) Bukkit.getOnlinePlayers()) {
             Location loc = new Location(world,161.5,63,259.5);
             player.teleport(loc);
@@ -119,10 +130,7 @@ public class Game {
         }
 
 
-        //Display winnaar
         Bukkit.broadcastMessage(winner.player.getName() + " is the Winner");
-        //permisions winnaar
-        //Spawn verbouwen met een bordje van de winnaar
     }
 
     public PlayerStat GetStatOfPlayer(Player player) {
@@ -131,7 +139,7 @@ public class Game {
                 return playerStat;
             }
         }
-        PlayerStat playerStat = new PlayerStat(0,0,player);
+        PlayerStat playerStat = new PlayerStat(-1,0,player);
         PlayersAlive.add(playerStat);
         return playerStat;
     }

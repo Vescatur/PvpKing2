@@ -1,17 +1,16 @@
 package nl.edmi.pvpking;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 
 /**
  * Created by Ivan on 1-9-2016.
@@ -50,6 +49,44 @@ public class GameListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
+    public void onBlockBreak(BlockBreakEvent e) {
+        if(!Main.game.battle) return;
+        e.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onBlockPlace(BlockPlaceEvent e) {
+        if(!Main.game.battle) return;
+        e.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onIgniteBreak(BlockIgniteEvent e) {
+        if(!Main.game.battle) return;
+        e.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onBucketEmpty(PlayerBucketEmptyEvent e) {
+        if(!Main.game.battle) return;
+        e.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onBucketFill(PlayerBucketFillEvent e) {
+        if(!Main.game.battle) return;
+        e.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void PlayerSpawnMob(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getMaterial() == Material.MONSTER_EGG) {
+            if(!Main.game.battle) return;
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerRespawn(PlayerRespawnEvent e) {
         if(!Main.game.battle) return;
         Player player = e.getPlayer();
@@ -67,8 +104,11 @@ public class GameListener implements Listener {
 
         Player killer = player.getKiller();
         if (killer != null) {
-            PlayerStat playerStat2 =  Main.game.GetStatOfPlayer(player);
+            Bukkit.broadcastMessage(killer.getDisplayName());
+            PlayerStat playerStat2 =  Main.game.GetStatOfPlayer(killer);
             playerStat2.PlayerKill(playerStat.Score);
+        }else {
+            Bukkit.broadcastMessage("no killer");
         }
 
         playerStat.PlayerDie();

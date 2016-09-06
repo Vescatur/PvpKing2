@@ -22,7 +22,7 @@ public class PlayerStat {
     }
 
     public void PlayerRespawn() {
-        if (Lives > 0) {
+        if (Lives >= 0) {
             World world = Bukkit.getWorlds().get(5);
             Location loc = new Location(world,0,120,0);
             player.teleport(loc);
@@ -34,12 +34,15 @@ public class PlayerStat {
     }
 
     public void PlayerDie() {
-        Lives = Lives -1;
+        Lives--;
         Score = 0;
     }
 
     public void PlayerKill(float score) {
+        Bukkit.broadcastMessage("Kill");
+        Bukkit.broadcastMessage(score+"");
         Score += score/2f;
+        Bukkit.broadcastMessage(Score+"");
         if (Score >= 1000) {
             Main.game.End(this);
         }
