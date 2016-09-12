@@ -29,11 +29,18 @@ public class Game {
     public void Begin() {
         if (battle) return;
         battle = true;
-        Bukkit.broadcastMessage("First person with a lvl of 30 is the KING.");
+        Bukkit.broadcastMessage("First person with a score if 1000 is the king.");
         PlayersAlive = new ArrayList<PlayerStat>();
         //Get All Players
         for(Player player:(List<Player>) Bukkit.getOnlinePlayers()) {
-            PlayersAlive.add(new PlayerStat(3,0,player));
+            int level = 0;
+            for (int i = 20; i >= 1; i--) {
+                if (Main.perms.playerInGroup(player, "Rank"+i)) {
+                    level = i;
+                    i = -1;
+                }
+            }
+            PlayersAlive.add(new PlayerStat(level,0,player));
         }
 
         World world = Bukkit.getWorlds().get(5);
@@ -64,9 +71,6 @@ public class Game {
         //StartTimer
         //pvp aan over 10 seconden
         Main.timer.Begin();
-
-
-
     }
 
     public void TurnPvpOn(){
@@ -74,6 +78,7 @@ public class Game {
     }
 
     public boolean UpdateGame() {
+        int playersalive = 0;
         for(PlayerStat playerStat: PlayersAlive) {
             if (!playerStat.player.isDead()) {
                 if (playerStat.Lives >=0) {
@@ -91,6 +96,14 @@ public class Game {
             if (playerStat.Score >= 200) {
                 End(playerStat);
             }
+            if (playerStat.online) {
+                if(playerStat.Lives >=0){
+                    playersalive++;
+                }
+            }
+            if(playersalive == 0) {
+                End(null);
+            }
         }
 
         if (PlayersAlive.size()>=1) {
@@ -100,7 +113,7 @@ public class Game {
 
             for(PlayerStat playerStat: PlayersAlive) {
                 if (playerStat.player != null ) {
-                    if (playerStat.Score != 0) {
+                    if (playerStat.Score != -1) {
                         Score line = objective.getScore(playerStat.player.getName());
                         line.setScore((int)playerStat.Score);
                     }
@@ -122,20 +135,28 @@ public class Game {
         board.clearSlot(DisplaySlot.SIDEBAR);
         World world = Bukkit.getWorlds().get(0);
 
-        for(Player player: (List<Player>) Bukkit.getOnlinePlayers()) {
-            Location loc = new Location(world,161.5,63,259.5);
-            player.teleport(loc);
-            player.setHealth(player.getMaxHealth());
-            player.setSaturation(20f);
+            for (Player player : (List<Player>) Bukkit.getOnlinePlayers()) {
+                if(!player.isDead()) {
+                    Location loc = new Location(world, 161.5, 63, 259.5);
+                    player.teleport(loc);
+                    player.setHealth(player.getMaxHealth());
+                    player.setSaturation(20f);
+                }
+            }
+
+        if(winner != null) {
+            Bukkit.broadcastMessage(winner.player.getName() + " is the Winner");
+        }else{
+            Bukkit.broadcastMessage("No winner");
         }
 
-
-        Bukkit.broadcastMessage(winner.player.getName() + " is the Winner");
     }
 
     public PlayerStat GetStatOfPlayer(Player player) {
         for(PlayerStat playerStat: PlayersAlive) {
-            if(playerStat.player == player) {
+            //Bukkit.broadcastMessage(playerStat.id.toString());
+            //Bukkit.broadcastMessage(player.getUniqueId().toString());
+            if(playerStat.id.equals(player.getUniqueId())) {
                 return playerStat;
             }
         }

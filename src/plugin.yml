@@ -6,6 +6,9 @@ commands:
                            startpvp:
                                     description: Does nothing
                                     usage: /startpvp
+                           stoppvp:
+                                    description: Does nothing
+                                    usage: /stoppvp
                            listalive:
                                     description: Does nothing
                                     usage: /listalive

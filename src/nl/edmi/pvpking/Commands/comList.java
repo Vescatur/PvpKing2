@@ -16,10 +16,13 @@ public class comList extends com {
 
     @Override
     public void Execute(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
-        Player player = (Player) sender;
-        player.sendMessage("List of players Alive");
-        for (PlayerStat p : Main.game.PlayersAlive) {
-            player.sendMessage(p.player.getDisplayName());
+        if(Main.perms.playerHas((Player)sender,"pvpking.admin"))
+        {
+            Player player = (Player) sender;
+            player.sendMessage("List of players Alive");
+            for (PlayerStat p : Main.game.PlayersAlive) {
+                player.sendMessage(p.player.getDisplayName());
+            }
         }
     }
 }

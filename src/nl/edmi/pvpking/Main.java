@@ -5,6 +5,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import nl.edmi.pvpking.Commands.comList;
 import nl.edmi.pvpking.Commands.comStartpvp;
+import nl.edmi.pvpking.Commands.comStoppvp;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -40,9 +41,10 @@ public class Main extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        Commands = new com[2];
+        Commands = new com[3];
         Commands[0] = new comStartpvp(this);
         Commands[1] = new comList(this);
+        Commands[2] = new comStoppvp(this);
         game = new Game(this);
         gameListener = new GameListener(this);
         timer = new Timer(this);
@@ -79,6 +81,8 @@ public class Main extends JavaPlugin {
             Commands[0].Execute(sender,cmd,label,args);
         }else if (cmd.getName().equalsIgnoreCase("listalive")) {
             Commands[1].Execute(sender,cmd,label,args);
+        }else if (cmd.getName().equalsIgnoreCase("stoppvp")) {
+            Commands[2].Execute(sender, cmd, label, args);
         }
         return  true;
     }

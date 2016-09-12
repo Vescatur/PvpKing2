@@ -9,6 +9,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 
@@ -35,6 +36,7 @@ public class GameListener implements Listener {
         if(!Main.game.battle) return;
         Player player = e.getPlayer();
         PlayerStat playerStat =  Main.game.GetStatOfPlayer(player);
+        playerStat.player = player;
         playerStat.online = true;
         playerStat.PlayerRespawn();
     }
@@ -87,13 +89,23 @@ public class GameListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerDamage(EntityDamageEvent event) {
+        if(event.getEntity() instanceof Player) {
+            PlayerStat playerStat = Main.game.GetStatOfPlayer((Player)event.getEntity());
+            if(playerStat.Lives <= -1) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerRespawn(PlayerRespawnEvent e) {
         if(!Main.game.battle) return;
         Player player = e.getPlayer();
         PlayerStat playerStat =  Main.game.GetStatOfPlayer(player);
         //playerStat.PlayerRespawn();
         Main.timer.RespawnPlayer(playerStat);
-        player.sendMessage("You have " + playerStat.Lives + " Lives left.");
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -105,12 +117,9 @@ public class GameListener implements Listener {
         Player killer = player.getKiller();
         if (killer != null) {
             Bukkit.broadcastMessage(killer.getDisplayName());
-            PlayerStat playerStat2 =  Main.game.GetStatOfPlayer(killer);
+            PlayerStat playerStat2 = Main.game.GetStatOfPlayer(killer);
             playerStat2.PlayerKill(playerStat.Score);
-        }else {
-            Bukkit.broadcastMessage("no killer");
         }
-
         playerStat.PlayerDie();
         e.setKeepInventory(true);
 
