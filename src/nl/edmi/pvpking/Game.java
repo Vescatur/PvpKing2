@@ -21,6 +21,7 @@ public class Game {
 
     public boolean pvp = false;
     public boolean battle = false;
+    public int ScoreToWin = 360;
 
     ScoreboardManager manager;
     Scoreboard board;
@@ -29,7 +30,7 @@ public class Game {
     public void Begin() {
         if (battle) return;
         battle = true;
-        Bukkit.broadcastMessage("First person with a score if 1000 is the king.");
+        Bukkit.broadcastMessage("First person to get to a score of "+ ScoreToWin+" is the king.");
         PlayersAlive = new ArrayList<PlayerStat>();
         //Get All Players
         for(Player player:(List<Player>) Bukkit.getOnlinePlayers()) {
@@ -70,7 +71,7 @@ public class Game {
         //Give Players absorption op basis van ranks
         //StartTimer
         //pvp aan over 10 seconden
-        Main.timer.Begin();
+        Main.timer.BeginBattle();
     }
 
     public void TurnPvpOn(){
@@ -93,7 +94,7 @@ public class Game {
                     }
                 }
             }
-            if (playerStat.Score >= 200) {
+            if (playerStat.Score >= ScoreToWin) {
                 End(playerStat);
             }
             if (playerStat.online) {
@@ -133,6 +134,7 @@ public class Game {
         pvp = false;
         battle = false;
         board.clearSlot(DisplaySlot.SIDEBAR);
+
         World world = Bukkit.getWorlds().get(0);
 
             for (Player player : (List<Player>) Bukkit.getOnlinePlayers()) {
@@ -146,6 +148,7 @@ public class Game {
 
         if(winner != null) {
             Bukkit.broadcastMessage(winner.player.getName() + " is the Winner");
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"pex user "+winner.player.getName()+" group add King * 60");
         }else{
             Bukkit.broadcastMessage("No winner");
         }

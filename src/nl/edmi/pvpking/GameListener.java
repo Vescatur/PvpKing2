@@ -82,14 +82,16 @@ public class GameListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void PlayerSpawnMob(PlayerInteractEvent e) {
+        if(!Main.game.battle) return;
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getMaterial() == Material.MONSTER_EGG) {
-            if(!Main.game.battle) return;
+
             e.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerDamage(EntityDamageEvent event) {
+        if(!Main.game.battle) return;
         if(event.getEntity() instanceof Player) {
             PlayerStat playerStat = Main.game.GetStatOfPlayer((Player)event.getEntity());
             if(playerStat.Lives <= -1) {

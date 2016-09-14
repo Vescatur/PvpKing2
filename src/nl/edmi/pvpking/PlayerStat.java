@@ -51,7 +51,7 @@ public class PlayerStat {
         Bukkit.broadcastMessage(score+"");
         Score += score/2f;
         Bukkit.broadcastMessage(Score+"");
-        if (Score >= 1000) {
+        if (Score >= Main.game.ScoreToWin) {
             Main.game.End(this);
         }
     }
